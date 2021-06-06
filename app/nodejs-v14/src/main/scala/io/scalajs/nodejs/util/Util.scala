@@ -1,5 +1,7 @@
 package io.scalajs.nodejs.util
 
+import com.thoughtworks.enableIf
+
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
@@ -117,4 +119,10 @@ trait UtilTypes extends js.Object {
 
   @deprecated("Use value instanceof WebAssembly.Module instead.", "Node.js v14.0.0")
   def isWebAssemblyCompiledModule(value: js.Any): Boolean = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def isCryptoKey(value: js.Any): Boolean = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def isKeyObject(value: js.Any): Boolean = js.native
 }

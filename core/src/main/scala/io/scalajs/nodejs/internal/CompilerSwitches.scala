@@ -16,4 +16,8 @@ object CompilerSwitches {
   final val isNodeJs14  = (c: whitebox.Context) => c.settings.exists(compare((major, _, _) => major == 14))
   final val gteNodeJs14 = (c: whitebox.Context) => c.settings.exists(compare((major, _, _) => major >= 14))
   final val ltNodeJs14  = (c: whitebox.Context) => c.settings.exists(compare((major, _, _) => major < 14))
+
+  final val isNodeJs16  = (c: whitebox.Context) => c.settings.exists(compare((major, _, _) => major == 16))
+  final val gteNodeJs16 = (c: whitebox.Context) => c.settings.exists(compare((major, _, _) => major >= 16))
+  final val ltNodeJs16  = (c: whitebox.Context) => c.settings.exists(compare((major, _, _) => major < 16))
 }

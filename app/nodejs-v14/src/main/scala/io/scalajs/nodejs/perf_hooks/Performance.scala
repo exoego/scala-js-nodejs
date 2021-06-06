@@ -29,6 +29,9 @@ class Performance extends js.Object {
   def timeOrigin: Double = js.native
 
   def timerify[T <: js.Function](fn: T): T = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def toJSON(): js.Object = js.native
 }
 
 @js.native
@@ -45,6 +48,9 @@ trait PerformanceEntry extends js.Object {
 
   @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs14)
   def flags: js.UndefOr[Int]
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def details: js.Any
 }
 
 @Factory
