@@ -7,10 +7,10 @@ import org.scalatest.funspec.AnyFunSpec
 class ProcessTest extends AnyFunSpec {
   describe("Process") {
     val versionPrefix =
-      if (TestEnvironment.isExecutedInExactNode8) "v8."
-      else if (TestEnvironment.isExecutedInExactNode10) "v10."
+      if (TestEnvironment.isExecutedInExactNode10) "v10."
       else if (TestEnvironment.isExecutedInExactNode12) "v12."
       else if (TestEnvironment.isExecutedInExactNode14) "v14."
+      else if (TestEnvironment.isExecutedInExactNode16) "v16."
       else "Unknown node.js version"
 
     it("contains the following properties") {
