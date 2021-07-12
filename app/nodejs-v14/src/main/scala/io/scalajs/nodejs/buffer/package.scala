@@ -1,12 +1,21 @@
 package io.scalajs.nodejs
 
+import com.thoughtworks.enableIf
+
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.typedarray.Uint8Array
+import scala.scalajs.js.typedarray.ArrayBuffer
+import scala.scalajs.js.typedarray.DataView
+import scala.scalajs.js.typedarray.TypedArray
+import scala.scalajs.js.|
 
 /** buffer package object
   */
 package object buffer {
+  type BlobSources =
+    js.Array[String] | js.Array[ArrayBuffer] | js.Array[TypedArray[_, _]] | js.Array[DataView] | js.Array[Blob]
+
   /////////////////////////////////////////////////////////////////////////////////
   //      Buffer Extensions
   /////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +67,14 @@ package object buffer {
   def transcode(source: Uint8Array, fromEnc: String, toEnc: String): Buffer =
     BufferNamespace.transcode(source, fromEnc, toEnc)
 
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  @deprecated("Use Buffer.from(data, 'base64') instead.", "Node.js v15.13.0")
+  def atob(data: String): String = BufferNamespace.atob(data)
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  @deprecated("Use buf.toString('base64') instead.", "Node.js v15.13.0")
+  def btoa(data: String): String = BufferNamespace.btoa(data)
+
   /** Returns the maximum number of bytes that will be returned when buf.inspect() is called.
     * This can be overridden by user modules. See util.inspect() for more details on buf.inspect() behavior.
     *
@@ -77,6 +94,8 @@ package object buffer {
     val INSPECT_MAX_BYTES: Int                                                = js.native
     val kMaxLength: Double                                                    = js.native
     def transcode(source: Uint8Array, fromEnc: String, toEnc: String): Buffer = js.native
+    def atob(data: String): String                                            = js.native
+    def btoa(data: String): String                                            = js.native
   }
 
   @js.native

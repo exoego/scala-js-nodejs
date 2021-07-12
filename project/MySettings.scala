@@ -32,7 +32,7 @@ object MySettings {
       "deprecation"
     ).filter(_ => !isScala212)).map(s => s"-Xlint:${s}")
     // no privates to allow private constructor
-    val unused = Seq("imports", "implicits", "locals", "patvars").filter(_ => !isScala212).map(s => s"-Wunused:${s}")
+    val unused = Seq("implicits", "locals", "patvars").filter(_ => !isScala212).map(s => s"-Wunused:${s}")
     lints ++ unused
   })
 

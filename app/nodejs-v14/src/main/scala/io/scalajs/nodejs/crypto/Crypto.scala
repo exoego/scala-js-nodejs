@@ -3,10 +3,14 @@ package io.scalajs.nodejs.crypto
 import com.thoughtworks.enableIf
 import io.scalajs.nodejs.buffer.Buffer
 import io.scalajs.nodejs.stream.{TransformOptions, WritableOptions}
+import io.scalajs.nodejs.v8.SharedArrayBuffer
+import io.scalajs.nodejs.Error
 import net.exoego.scalajs.types.util.Factory
 
+import scala.scalajs
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.typedarray.{ArrayBuffer, DataView, TypedArray}
 import scala.scalajs.js.|
 
 /** The crypto module provides cryptographic functionality that includes a set of wrappers
@@ -173,6 +177,23 @@ trait Crypto extends js.Object {
   @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs14)
   def diffieHellman(options: DiffieHellmanOptions): Buffer = js.native
 
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def generateKey(`type`: String, options: GenerateKeyOptions, callback: Callback1[KeyObject]): Unit = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def generateKeySync(`type`: String, options: GenerateKeyOptions): Unit = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def generatePrime(size: String, options: GeneratePrimeOptions, callback: Callback1[ArrayBuffer | js.BigInt]): Unit =
+    js.native
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def generatePrimeSync(size: String, options: GeneratePrimeOptions): ArrayBuffer | js.BigInt = js.native
+
+  def getCipherInfo(name: String): js.UndefOr[CipherInfo]                                = js.native
+  def getCipherInfo(name: String, options: GetCipherInfoOptions): js.UndefOr[CipherInfo] = js.native
+  def getCipherInfo(nid: Double): js.UndefOr[CipherInfo]                                 = js.native
+  def getCipherInfo(nid: Double, options: GetCipherInfoOptions): js.UndefOr[CipherInfo]  = js.native
+
   def generateKeyPair(
       `type`: String,
       options: GenerateKeyPairOptions,
@@ -319,6 +340,11 @@ trait Crypto extends js.Object {
   @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs12)
   def randomInt(min: Int, max: Int, callback: Callback1[Int]): Unit = js.native
 
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def randomUUID(options: RandomUUIDOptions): String = js.native
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def randomUUID(): String = js.native
+
   def scrypt(password: String, salt: String, keylen: Int, options: ScryptOptions, callback: Callback1[Buffer]): Unit =
     js.native
   def scrypt(password: String,
@@ -401,6 +427,44 @@ trait Crypto extends js.Object {
   @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs12) def verify(data: BufferLike,
                                                                                 key: KeyObject
   ): Boolean = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def checkPrime(candidate: ArrayBuffer | SharedArrayBuffer | TypedArray[_, _] | Buffer | DataView | js.BigInt,
+                 options: CheckPrimeOptions,
+                 callback: Callback1[Boolean]
+  ): Unit = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def checkPrimeSync(candidate: ArrayBuffer | SharedArrayBuffer | TypedArray[_, _] | Buffer | DataView | js.BigInt,
+                     options: CheckPrimeOptions
+  ): Boolean = js.native
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def checkPrimeSync(
+      candidate: ArrayBuffer | SharedArrayBuffer | TypedArray[_, _] | Buffer | DataView | js.BigInt
+  ): Boolean = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def hkdf(digest: String,
+           key: String | ArrayBuffer | Buffer | TypedArray[_, _] | DataView | KeyObject,
+           salt: String | ArrayBuffer | Buffer | TypedArray[_, _] | DataView,
+           info: String | ArrayBuffer | Buffer | TypedArray[_, _] | DataView,
+           keylen: Int,
+           callback: Callback1[Buffer]
+  ): Unit = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def hkdfSync(digest: String,
+               key: String | ArrayBuffer | Buffer | TypedArray[_, _] | DataView | KeyObject,
+               salt: String | ArrayBuffer | Buffer | TypedArray[_, _] | DataView,
+               info: String | ArrayBuffer | Buffer | TypedArray[_, _] | DataView,
+               keylen: Int
+  ): Buffer = js.native
+
+  @enableIf(io.scalajs.nodejs.internal.CompilerSwitches.gteNodeJs16)
+  def secureHeapUsed(): HeapUsed = js.native
+
+  // TODO: Add when reached stable
+  // webcrypto
 }
 
 /** Crypto Singleton
@@ -510,6 +574,19 @@ trait CreatePublicKeyOptions extends js.Object {
 }
 
 @Factory
+trait GenerateKeyOptions extends js.Object {
+  val length: Int
+}
+
+@Factory
+trait GeneratePrimeOptions extends js.Object {
+  var add: js.UndefOr[ArrayBuffer | SharedArrayBuffer | TypedArray[_, _] | Buffer | DataView | js.BigInt] = js.undefined
+  var rem: js.UndefOr[ArrayBuffer | SharedArrayBuffer | TypedArray[_, _] | Buffer | DataView | js.BigInt] = js.undefined
+  var safe: js.UndefOr[Boolean]                                                                           = js.undefined
+  var bigint: js.UndefOr[Boolean]                                                                         = js.undefined
+}
+
+@Factory
 trait GenerateKeyPairOptions extends js.Object {
   val modulusLength: Int
   var publicExponent: js.UndefOr[Int]                        = js.undefined
@@ -534,4 +611,36 @@ trait ScryptOptions extends js.Object {
 trait KeyPair extends js.Object {
   val publicKey: String | Buffer | KeyObject
   val privateKey: String | Buffer | KeyObject
+}
+
+@Factory
+trait CheckPrimeOptions extends js.Object {
+  var checks: js.UndefOr[Int] = js.undefined
+}
+
+trait CipherInfo extends js.Object {
+  var name: String
+  var nid: Double
+  var blockSize: Double
+  var ivLength: Int
+  var keyLength: Int
+  var mode: String
+}
+
+@Factory
+trait GetCipherInfoOptions extends js.Object {
+  var keyLength: js.UndefOr[Int] = js.undefined
+  var ivLength: js.UndefOr[Int]  = js.undefined
+}
+
+@Factory
+trait RandomUUIDOptions extends js.Object {
+  var disableEntropyCache: js.UndefOr[Boolean] = js.undefined
+}
+
+trait HeapUsed extends js.Object {
+  var total: Double
+  var min: Double
+  var used: Double
+  var utilization: Double
 }
