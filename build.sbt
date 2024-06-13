@@ -21,7 +21,7 @@ inThisBuild(
 )
 
 lazy val scala213 = "2.13.12"
-lazy val scala212 = "2.12.18"
+lazy val scala212 = "2.12.19"
 ThisBuild / crossScalaVersions := Seq(scala213, scala212)
 ThisBuild / scalaVersion       := scala213
 Global / excludeLintKeys ++= Set(publishArtifact, scalacOptions)
